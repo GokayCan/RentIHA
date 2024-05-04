@@ -1,0 +1,19 @@
+<tbody id="iha-list">
+    {% for iha in ihas %}
+    <tr>
+        <td>{{ iha.brand }}</td>
+        <td>{{ iha.model }}</td>
+        <td>{{ iha.weight }}</td>
+        <td>{{ iha.category }}</td>
+        <td>
+            <a class="text-decoration-none" href="/rent/{{ iha.id }}"><button class="btn btn-sm btn-secondary mt-2 mr-2" title="Güncelle"><i class="fas fa-shopping-cart"></i></button></a>
+            {% if perms.update_iha %}
+                <a class="text-decoration-none" href="update/{{ iha.id }}"><button class="btn btn-sm btn-warning mt-2 mr-2" title="Güncelle"><i class="fas fa-edit"></i></button></a>
+            {% endif %}
+            {% if perms.delete_iha %}
+                <button class="btn btn-sm btn-danger mt-2 mr-2" title="Sil" onclick="confirmDelete({{ iha.id }})"><i class="fas fa-trash"></i></button>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>

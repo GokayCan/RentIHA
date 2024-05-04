@@ -1,0 +1,28 @@
+{% extends 'index.html' %}
+{% block title %}IHA KİRALA{% endblock %}
+{% block content %}
+    <!--Bana 2 tane tarih seçme inputu saat ve dakika dahil olan bir input getir-->
+    <div class="container">
+        <div class="text-center card-header pl-5 pb-5">
+            <h2>İHA KİRALA</h2>
+          </div>
+        <div class="row">
+            <div class="col-md-12 my-3">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="form-group
+                    ">
+                        <label for="start_date">Başlangıç Tarihi</label>
+                        <input type="datetime-local" class="form-control" id="start_date" name="start_date">
+                    </div>
+                    <div class="form-group
+                    ">
+                        <label for="end_date">Bitiş Tarihi</label>
+                        <input type="datetime-local" class="form-control" id="end_date" name="end_date">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Kirala</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

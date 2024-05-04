@@ -1,0 +1,14 @@
+<tbody id="my-rent-list">
+    {% for rent in myrents %}
+    <tr>
+        <td>{{ rent.iha_model }}</td>
+        {% comment %} <td>{{ rent.username }}</td> {% endcomment %}
+        <td>{{ rent.rentStartDate }}</td>
+        <td>{{ rent.rentEndDate }}</td>
+        <td>
+            <a class="text-decoration-none" href="update/{{ rent.id }}"><button class="btn btn-sm btn-warning mt-2 mr-2" title="Güncelle"><i class="fas fa-edit"></i></button></a>
+            <button class="btn btn-sm btn-danger mt-2 mr-2" title="Sil" onclick="confirmDelete({{ rent.id }})"><i class="fas fa-trash"></i></button>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>

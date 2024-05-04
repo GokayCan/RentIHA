@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Anasayfa{% endblock %}
+{% block main %}
+
+<div class="wrapper">
+  <!-- Navbar -->
+  {% block navbar %}
+  {% include "navbar.html" %} 
+  {% endblock navbar %} 
+  <!-- /.navbar -->
+
+  <!-- Sidebar -->
+  {% block sidebar %}
+  {% include "sidebar.html" %} 
+  {% endblock sidebar %} 
+  <!-- /.sidebar -->
+  
+  <!-- Content -->
+  <div class="content-wrapper">
+    {% block content %}
+      <h2>Anasayfa</h2>
+    {% endblock content %}
+  </div>
+  <!-- /.content -->
+  
+  <!-- Footer -->
+  {% block footer %}
+  {% include "footer.html" %} 
+  {% endblock footer %} 
+  <!-- /.footer -->
+</div>
+  
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'index.html' %}
+{% block title %}KİRALAMAYI GÜNCELLE{% endblock %}
+{% block content %}
+    <!--Bana 2 tane tarih seçme inputu saat ve dakika dahil olan bir input getir-->
+    <div class="container">
+        <div class="text-center card-header pl-5 pb-5">
+            <h2>KİRALAMAYI GÜNCELLE</h2>
+          </div>
+        <div class="row">
+            <div class="col-md-12 my-3">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <!--hem kullanıcı hemde iha için select lazım-->
+                    <div class="form-group">
+                        <label for="user">Kullanıcı</label>
+                        <select class="form-control" id="user_id" name="user_id">
+                            {% for user in users %}
+                                <option value="{{ user.id }}" {% if user.id == rent.user_id %}selected{% endif %}>{{ user.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="iha">İHA</label>
+                        <select class="form-control" id="iha_id" name="iha_id">
+                            
+                            {% for iha in ihas %}
+                            <option value="{{ iha.id }}" {% if iha.id == rent.iha_id %}selected{% endif %}>{{ iha.model }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="start_date">Başlangıç Tarihi</label>
+                        <input type="datetime-local" class="form-control" id="start_date" name="start_date">
+                    </div>
+                    <div class="form-group">
+                        <label for="end_date">Bitiş Tarihi</label>
+                        <input type="datetime-local" class="form-control" id="end_date" name="end_date">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function(){        
+            $('#start_date').val('{{ rent.rentStartDate|date:"Y-m-d\TH:i" }}');
+            $('#end_date').val('{{ rent.rentEndDate|date:"Y-m-d\TH:i" }}');
+        });
+        
+    </script>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'index.html' %}
+{% block title %}IHA GÜNCELLE{% endblock %}
+{% block content %}
+<div class="text-center card-header pl-5 pb-5">
+  <h2>İHA GÜNCELLE</h2>
+</div>
+
+<form id="update-iha-form" action="{% url 'iha_update' iha_id=iha.id %}" method="post">
+{% csrf_token %}
+  <div class="form-group ml-5 mr-5">
+    <label for="brand">Marka</label>
+    <input type="text" class="form-control" id="brand" name="brand" placeholder="Marka">
+  </div>
+  <div class="form-group ml-5 mr-5">
+    <label for="model">Model</label>
+    <input type="text" class="form-control" id="model" name="model" placeholder="Model">
+  </div>
+  <div class="form-group ml-5 mr-5">
+    <label for="weight">Ağırlık</label>
+    <input type="number" class="form-control" id="weight" name="weight" placeholder="Ağırlık">
+  </div>
+  <div class="form-group ml-5 mr-5">
+    <label for="category">Kategori</label>
+    <input type="text" class="form-control" id="category" name="category" placeholder="Kategori">
+  </div>
+  <button type="submit" class="btn btn-primary ml-5 mb-5"><i class="fas fa-save"></i> Güncelle</button>
+</form>
+
+<script>
+  $(document).ready(function(){
+    $('#brand').val('{{ iha.brand }}');
+    $('#model').val('{{ iha.model }}');
+    $('#weight').val('{{ iha.weight }}');
+    $('#category').val('{{ iha.category }}');
+  });
+</script>
+  
+
+{% endblock %}
