@@ -14,5 +14,5 @@ urlpatterns = [
     path('iha/', include('iha.urls')),
     path('rent/', include('rent.urls')),
     # path('api-auth/', include('rest_framework.urls')),
-    # re_path(r'^.*$', lambda request: redirect('home')), #wildcard
+    re_path(r'^.*$', lambda request: redirect('home')), #wildcard
 ]

@@ -35,7 +35,8 @@ def rent(request, iha_id):
             messages.success(request, 'Kiralama işlemi başarılı.')
             return redirect('/iha/')
     else:
-        return render(request, 'rent.html')
+        iha = IHA.objects.get(id=iha_id)
+        return render(request, 'rent.html', {'iha': iha})
     
 # my rent list method
 @api_view(['GET'])

@@ -1,13 +1,8 @@
-from urllib.request import Request
-from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from rest_framework.decorators import api_view
 from django.contrib.auth import get_user_model,login,authenticate
-from rest_framework.authtoken.models import Token
-from django.views.decorators.csrf import csrf_exempt
-from django.middleware.csrf import rotate_token
-from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib import messages
+from django.contrib.auth.models import Group
 
 @api_view(['POST','GET'])
 def login_user(request):
@@ -57,6 +52,8 @@ def register(request):
         try:
             user = get_user_model().objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
             user.save()
+            group = Group.objects.get(name='user_group')
+            user.groups.add(group)
             messages.success(request, 'Kayıt başarılı.')
             return redirect('/auth/login')
         except Exception as e:

@@ -1,6 +1,6 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="/home" class="brand-link">
       {% comment %} <img
         src="dist/img/AdminLTELogo.png"
         alt="AdminLTE Logo"
@@ -22,7 +22,7 @@
           /> {% endcomment %}
         </div>
         <div class="info">
-          <a href="#" class="d-block">Gökay Can</a>
+          <a href="/home" class="d-block">{{ user.first_name }} {{ user.last_name }}</a>
         </div>
       </div>
 
@@ -30,7 +30,7 @@
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <li class="nav-item">
-                <a href="/" class="nav-link">
+                <a href="/home" class="nav-link">
                   <i class="fa fa-home nav-icon"></i>
                   <p>Anasayfa</p>
                 </a>
