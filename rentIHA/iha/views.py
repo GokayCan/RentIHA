@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from rent.models import Rent
 from django.contrib.auth.decorators import permission_required
 
+# bu method ile iha listesini döndürüyorum ve login olmayan kullanıcıların erişimini engelliyorum
+# aynı zamanda iha.list_ihas izni olan kullanıcıların erişimini sağlıyorum örneğin admin ve user grubu bu methoda erişebilir
 @api_view(['GET'])
 @login_required
 @permission_required('iha.list_ihas')
@@ -16,6 +18,8 @@ def list_ihas(request):
     # messages.info(request, 'Listeleme İşlemi Başarılı')
     return render(request, 'iha_list.html', {'ihas': ihas,'message': 'Listeleme İşlemi Başarılı'})
 
+# bu method ile iha listesini json formatında döndürüyorum ve login olmayan kullanıcıların erişimini engelliyorum
+# bunu yapma sebebim eğer listeden bir iha silinirse sayfa refresh edilmeden silme işlemi gerçekleştirdikten sonra listede güncelleme yapabilmek için
 @api_view(['GET'])
 @login_required
 @permission_required('iha.list_ihas_data')
@@ -24,6 +28,7 @@ def list_ihas_data(request):
     # messages.info(request, 'Listeleme İşlemi Başarılı')
     return JsonResponse({'ihas': list(ihas.values())})
 
+# bu method ile iha ekliyorum
 @api_view(['POST','GET'])
 @login_required
 @permission_required('iha.add_iha')
@@ -40,6 +45,7 @@ def add_iha(request):
     else:
         return render(request, 'iha_add.html')
 
+# bu method ile iha güncelliyorum hangi ihanın güncelleneceğini iha_id ile belirtiyorum
 @api_view(['POST','GET'])
 @login_required
 @permission_required('iha.update_iha')
@@ -56,6 +62,7 @@ def update_iha(request, iha_id):
     else:
         return render(request, 'iha_update.html', {'iha': iha})
 
+# bu method ile iha siliyorum ve hangi ihanın silineceğini iha_id ile belirtiyorum
 @api_view(['POST'])
 @login_required
 @permission_required('iha.delete_iha')

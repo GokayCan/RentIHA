@@ -1,3 +1,4 @@
+<!-- tüm projenin temel sayfası bu sayfadır. Burada tüm linkler ve scriptler import ediliyor. -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="tr">
@@ -76,10 +77,12 @@
   
   <body class="hold-transition sidebar-mini layout-fixed">
     
+    <!--temel sayfa burası olduğu için kalan sayfaların burada çağrılması için bir main block oluşturuyorum -->
     {% block main %}
     <!-- İçerik bloğu -->
     {% endblock main %}
 
+    <!-- mesajları göstermek için başta bu yolu kullanıyordum sonra toastr ile yapman daha basit olacağına karar verdim -->
     {% comment %} {% if messages %}
     <ul class="messages">
         {% for message in messages %}
@@ -96,6 +99,9 @@
     </ul>
     {% endif %} {% endcomment %}
 
+    <!-- nerdeyse tüm sayfalarda olan toastr mesajlarının ekranda gözükmesi için base sayfama bu scriptleri ekledim
+        mesajın türüne göre farklı renklerde gözükecek şekilde ayarladım
+    -->
     {% if messages %}
     {% for message in messages %}
         {% if message.tags == 'success'%}
@@ -157,7 +163,7 @@
   </body>
   </html>
 
-
+  <!-- Datatable'ların konfigürasyonu için her sayfada tek tek konfigüre etmek yerine burayı ayarladım -->
   <script>
     $(document).ready(function() {
       $('#datatable').DataTable({

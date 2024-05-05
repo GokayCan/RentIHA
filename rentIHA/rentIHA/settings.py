@@ -14,19 +14,21 @@ from pathlib import Path
 import environ
 import os
 
+# .env dosyasından konfigürasyonları almak için environ kütüphanesini kullanıyorum
 env = environ.Env()
 environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Take environment variables from .env file
+# .env dosyasını os modülü ile bulup, okuyup, konfigürasyonları alıyorum
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# secret key .env dosyasından alınıyor
 SECRET_KEY = env('SECRET_KEY')
 
 
@@ -37,7 +39,7 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
+# kendi eklediğim uygulamaları buraya ekliyorum
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -67,6 +69,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            # tüm template dosyalarını burada belirtiyorum
             BASE_DIR / "templates",
             os.path.join(BASE_DIR, 'templates')
         ],
@@ -88,6 +91,7 @@ WSGI_APPLICATION = 'rentIHA.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# .env dosyasından veritabanı konfigürasyonlarını alıp, burada konfigüre ediyorum
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -133,7 +137,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
+# static dosyasların olduğu klasörü belirtiyorum
 STATIC_URL = 'static/'
 
 # Define the directories where Django will look for static files
@@ -148,6 +152,7 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+# default urlleri belirliyorum
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/auth/login/'

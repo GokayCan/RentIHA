@@ -1,6 +1,10 @@
 from django.urls import path
 from . import views
 
+# my ile devam eden sayfalar kullanıcının kendi kiraladığı IHA'ları görebileceği ve işlem yapabileceği sayfalardır
+# admin ile devam eden sayfalar ise adminin tüm kiralama işlemlerini görebileceği ve işlem yapabileceği sayfalardır
+# admin iki sayfayada erişebilirken user sadece my ile başlayan sayfalara erişebilir
+# rent_iha ise IHA kiralama işlemlerinin yapıldığı sayfadır bu yüzden iki tarafta erişebilir
 urlpatterns = [
     path('<int:iha_id>/', views.rent, name='rent_iha'),
     path('rents/', views.admin_rents, name='admin_rent_list'),

@@ -9,6 +9,7 @@ from django.contrib.auth import get_user_model
 from iha.models import IHA
 from django.contrib.auth.decorators import permission_required
 
+# iha kiralamak için gerekli method
 @api_view(['GET', 'POST'])
 @login_required
 @permission_required('rent.add_rent')
@@ -16,12 +17,14 @@ def rent(request, iha_id):
     if request.method == 'POST':
             user_id = request.user.id
             iha_id = iha_id
+            # tablodaki tarih değerleri ile formdan gelen tarih format birbirine uygsun ve karşılaştırabileyyim diye format değiştirme işlemlerini yapıyorum
             start_date_str = request.POST.get('start_date')
             end_date_str = request.POST.get('end_date')
             rent_start_date = timezone.make_aware(datetime.strptime(start_date_str, '%Y-%m-%dT%H:%M'))
             rent_end_date = timezone.make_aware(datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M'))
 
             # İlgili IHA ID'si için mevcut kiralama kayıtlarını kontrol et
+            # bu sayede eğer o aralıkta biri ihayı kiralamışsa başkasının kiralamasının önüne geçmiş oluyorum
             existing_rents = Rent.objects.filter(iha_id=iha_id)
             if existing_rents:
                 for rent in existing_rents:
@@ -38,12 +41,15 @@ def rent(request, iha_id):
         iha = IHA.objects.get(id=iha_id)
         return render(request, 'rent.html', {'iha': iha})
     
-# my rent list method
+# kullanıcı kendi kiraladığı ihaları görebilir
 @api_view(['GET'])
 @login_required
 @permission_required('rent.list_my_rents')
 def my_rents(request):
+    # login olan kullanıcının id'sini alıyorum
     user_id = request.user.id
+    # sadece kendisine ait olan kiralama kayıtlarını getiriyorum
+    # bunun için filter metodu kullanıyorum
     rents = Rent.objects.filter(user_id=user_id)
     rent_list = []
     for rent in rents:
@@ -54,9 +60,10 @@ def my_rents(request):
             'rentStartDate': rent.rentStartDate,
             'rentEndDate': rent.rentEndDate
         })
+        # kiraladığı ihaları sayfaya gönderiyorum
     return render(request, 'my_rents.html', {'myrents': rent_list})
 
-# admin rent list method
+# admin tüm kiralama işlemlerini görebilir
 @api_view(['GET'])
 @login_required
 @permission_required('rent.list_admin_rents')
@@ -75,7 +82,7 @@ def admin_rents(request):
         })
     return render(request, 'rent_list.html', {'rents': rent_list})
 
-# admin rent delete method
+# admin tüm kiralamaların silinme işlemini yapabilir
 @api_view(['GET'])
 @login_required
 @permission_required('rent.delete_admin_rent')
@@ -88,20 +95,25 @@ def admin_delete_rent(request, rent_id):
         messages.error(request, 'Kiralama kaydı silinemedi.')
         return redirect('admin_rent_list')
     
-# rent delete method
+# kullanıcı sadece kendi kiraladığı ihaları silebilir
 @api_view(['GET'])
 @login_required
 @permission_required('rent.delete_my_rent')
 def delete_rent(request, rent_id):
     try:
-        Rent.objects.filter(id=rent_id).delete()
+        # eğer kiralama kaydı kendine ait değilse silemez
+        rent = Rent.objects.get(id=rent_id)
+        if rent.user_id != request.user.id:
+            return redirect('my_rents')
+        
+        rent.delete()
         messages.success(request, 'Kiralama kaydınız silindi.')
         return redirect('my_rents')
     except:
         messages.error(request, 'Kiralama kaydınız silinemedi.')
         return redirect('my_rents')
     
-#admin_rent_update method
+# admin tüm kiralamaların güncelleme işlemini yapabilir
 @api_view(['POST','GET',])
 @login_required
 @permission_required('rent.update_admin_rent')
@@ -116,11 +128,11 @@ def admin_update_rent(request,rent_id):
             rent.rentStartDate = rent_start_date
             rent.rentEndDate = rent_end_date
 
-            # İlgili IHA ID'si için mevcut kiralama kayıtlarını kontrol et
+            # İlgili IHA ID'si için mevcut kiralama kayıtlarını kontrol ediyorum
             existing_rents = Rent.objects.filter(iha_id=request.POST.get('iha_id') and id != rent_id)
             if existing_rents:
                 for rent in existing_rents:
-                    # Eğer seçilen tarih aralığı mevcut kiralamalarla çakışıyorsa uyarı ver
+                    # Eğer seçilen tarih aralığı mevcut kiralamalarla çakışıyorsa uyarı verdiriyorum
                     if (rent_start_date <= rent.rentEndDate) and (rent_end_date >= rent.rentStartDate):
                         messages.error(request, 'Seçilen tarih aralığı başka bir kiralama ile çakışıyor.')
                         return redirect('admin_rent_update', rent_id=rent_id)
@@ -139,12 +151,15 @@ def admin_update_rent(request,rent_id):
         ihas = IHA.objects.all()
         return render(request, 'rent_update.html',{'rent':rent,'ihas': ihas,'users':users})
     
-#rent_update method
+# kullanıcı sadece kendi kiraladığı ihaları güncelleyebilir
 @api_view(['POST','GET'])
 @login_required
 @permission_required('rent.update_my_rent')
 def update_rent(request,rent_id):
     rent = Rent.objects.get(id=rent_id)
+    # Eğer gelen rent nesnesinin user_id'si ile login olan kullanıcının id'si farklı ise
+    if rent.user_id != request.user.id:
+        return redirect('my_rent')
     if request.method == 'POST':
         try:
             start_date_str = request.POST.get('start_date')
@@ -154,11 +169,11 @@ def update_rent(request,rent_id):
             rent.rentStartDate = rent_start_date
             rent.rentEndDate = rent_end_date
 
-            # İlgili IHA ID'si için mevcut kiralama kayıtlarını kontrol et
+            # İlgili IHA ID'si için mevcut kiralama kayıtlarını kontrol ediyorum
             existing_rents = Rent.objects.filter(iha_id=request.POST.get('iha_id') and id != rent_id)
             if existing_rents:
                 for rent in existing_rents:
-                    # Eğer seçilen tarih aralığı mevcut kiralamalarla çakışıyorsa uyarı ver
+                    # Eğer seçilen tarih aralığı mevcut kiralamalarla çakışıyorsa uyarı verdiriyorum
                     if (rent_start_date <= rent.rentEndDate) and (rent_end_date >= rent.rentStartDate):
                         messages.error(request, 'Seçilen tarih aralığı başka bir kiralama ile çakışıyor.')
                         return redirect('my_rent_update', rent_id=rent_id)
@@ -171,11 +186,5 @@ def update_rent(request,rent_id):
             messages.error(request, 'Kiralama kaydı güncellenemedi.')
             return redirect('my_rent_update', rent_id=rent_id)
     else:
-        rent = Rent.objects.get(id=rent_id)
-
-        # Eğer gelen rent nesnesinin user_id'si ile login olan kullanıcının id'si farklı ise
-        if rent.user_id != request.user.id:
-            return redirect('my_rent')  # Yönlendirme yapılacak hata sayfasının adını buraya yazın
-
         ihas = IHA.objects.all()
         return render(request, 'my_rent_update.html',{'rent':rent,'ihas': ihas})
