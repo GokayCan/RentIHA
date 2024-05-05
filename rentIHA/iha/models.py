@@ -10,4 +10,4 @@ class IHA(models.Model):
     # bu kısım modelin permissionlarını belirlemek için kullanılıyor,
     # halihazırda zaten otomatik yükleniyor ama ben isimleri kendim belirlemek istedim
     class Meta:
-        permissions = (("list_ihas",""), ("list_ihas_data",""),("update_iha",""))
+        permissions = (("list_ihas","Can list iha"), ("list_ihas_data","Can list iha data"),("update_iha","Can update iha"))

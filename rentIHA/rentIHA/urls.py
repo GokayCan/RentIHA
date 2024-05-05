@@ -15,5 +15,5 @@ urlpatterns = [
     path('rent/', include('rent.urls')),
     # path('api-auth/', include('rest_framework.urls')),
     # bu path ile eğer hiçbir path eşleşmezse home sayfasına yönlendiriyorum
-    re_path(r'^.*$', lambda request: redirect('home')), #wildcard
+    #re_path(r'^.*$', lambda request: redirect('home')), #wildcard
 ]

@@ -70,6 +70,7 @@ def delete_iha(request):
     iha_id = request.POST.get('iha_id')
     iha = IHA.objects.get(id=iha_id)
     rents = Rent.objects.filter(iha_id=iha.id)
+    # eğer bir kiralama durumu daha bitmemiş ise iha silinemez
     if rents.exists() and any(rent.rentEndDate >= timezone.now() for rent in rents):
         messages.warning(request, 'Silme İşlemi Başarısız. İHA, kiralanmış durumdadır.')
         return JsonResponse({'status':'false','message': 'Silme İşlemi Başarısız. İHA, kiralanmış durumdadır.'})

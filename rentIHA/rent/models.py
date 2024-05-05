@@ -15,4 +15,4 @@ class Rent(models.Model):
 
     # bu kısım modelin permissionlarını belirlemek için kullanılıyor,
     class Meta:
-        permissions = ( ("list_my_rents",""), ("list_admin_rents",""), ("delete_my_rent",""), ("delete_admin_rent",""), ("update_my_rent",""), ("update_admin_rent",""))
+        permissions = ( ("list_my_rents","Can list myrent"), ("list_admin_rents","Can list rent"), ("delete_my_rent","Can delete myrent"), ("delete_admin_rent","Can delete rent"), ("update_my_rent","Can update myrent"), ("update_admin_rent","Can update rent"))

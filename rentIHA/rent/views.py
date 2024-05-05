@@ -127,16 +127,15 @@ def admin_update_rent(request,rent_id):
             rent_end_date = timezone.make_aware(datetime.strptime(end_date_str, '%Y-%m-%dT%H:%M'))
             rent.rentStartDate = rent_start_date
             rent.rentEndDate = rent_end_date
-
             # İlgili IHA ID'si için mevcut kiralama kayıtlarını kontrol ediyorum
-            existing_rents = Rent.objects.filter(iha_id=request.POST.get('iha_id') and id != rent_id)
+            existing_rents = Rent.objects.filter(iha_id=request.POST.get('iha_id')).exclude(id=rent_id)
             if existing_rents:
-                for rent in existing_rents:
+                for other_rent in existing_rents:
                     # Eğer seçilen tarih aralığı mevcut kiralamalarla çakışıyorsa uyarı verdiriyorum
-                    if (rent_start_date <= rent.rentEndDate) and (rent_end_date >= rent.rentStartDate):
+                    if (other_rent.rentEndDate >= rent_start_date and other_rent.rentStartDate <= rent_start_date) or (other_rent.rentEndDate >= rent_end_date and other_rent.rentStartDate <= rent_end_date):
                         messages.error(request, 'Seçilen tarih aralığı başka bir kiralama ile çakışıyor.')
                         return redirect('admin_rent_update', rent_id=rent_id)
-                    
+            
             rent.iha_id = request.POST.get('iha_id')
             rent.user_id = request.POST.get('user_id')
             rent.save()
@@ -146,7 +145,6 @@ def admin_update_rent(request,rent_id):
             messages.error(request, 'Kiralama kaydı güncellenemedi.')
             return redirect('admin_rent_update', rent_id=rent_id)
     else:
-        rent = Rent.objects.get(id=rent_id)
         users = get_user_model().objects.all()
         ihas = IHA.objects.all()
         return render(request, 'rent_update.html',{'rent':rent,'ihas': ihas,'users':users})
@@ -170,13 +168,13 @@ def update_rent(request,rent_id):
             rent.rentEndDate = rent_end_date
 
             # İlgili IHA ID'si için mevcut kiralama kayıtlarını kontrol ediyorum
-            existing_rents = Rent.objects.filter(iha_id=request.POST.get('iha_id') and id != rent_id)
+            existing_rents = Rent.objects.filter(iha_id=request.POST.get('iha_id')).exclude(id=rent_id)
             if existing_rents:
-                for rent in existing_rents:
+                for other_rent in existing_rents:
                     # Eğer seçilen tarih aralığı mevcut kiralamalarla çakışıyorsa uyarı verdiriyorum
-                    if (rent_start_date <= rent.rentEndDate) and (rent_end_date >= rent.rentStartDate):
+                    if (other_rent.rentEndDate >= rent_start_date and other_rent.rentStartDate <= rent_start_date) or (other_rent.rentEndDate >= rent_end_date and other_rent.rentStartDate <= rent_end_date):
                         messages.error(request, 'Seçilen tarih aralığı başka bir kiralama ile çakışıyor.')
-                        return redirect('my_rent_update', rent_id=rent_id)
+                        return redirect('my_rents_update', rent_id=rent_id)
                     
             rent.iha_id = request.POST.get('iha_id')
             rent.save()
@@ -184,7 +182,7 @@ def update_rent(request,rent_id):
             return redirect('my_rents')
         except:
             messages.error(request, 'Kiralama kaydı güncellenemedi.')
-            return redirect('my_rent_update', rent_id=rent_id)
+            return redirect('my_rents_update', rent_id=rent_id)
     else:
         ihas = IHA.objects.all()
         return render(request, 'my_rent_update.html',{'rent':rent,'ihas': ihas})
